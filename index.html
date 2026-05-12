@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini POS Ekranı</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: var(--tg-theme-bg-color, #f3f4f6);
+            color: var(--tg-theme-text-color, #111827);
+        }
+        .tg-input {
+            background-color: var(--tg-theme-secondary-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #111827);
+            border-color: var(--tg-theme-hint-color, #d1d5db);
+        }
+        .tg-button {
+            background-color: var(--tg-theme-button-color, #3b82f6);
+            color: var(--tg-theme-button-text-color, #ffffff);
+        }
+    </style>
+</head>
+<body class="p-5 font-sans">
+
+    <div class="max-w-md mx-auto bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-gray-100">
+        <div class="text-center mb-6">
+            <span class="text-4xl">🚀</span>
+            <h1 class="text-xl font-bold mt-2">Hızlı POS Terminali</h1>
+            <p class="text-xs text-gray-500">Telegram arayüzünden çıkmadan anında fatura kesin</p>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider mb-1 opacity-80">Ürün Adı</label>
+                <input id="urun" type="text" placeholder="Örn: Laptop" class="tg-input w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider mb-1 opacity-80">Satış Adeti</label>
+                <input id="miktar" type="number" value="1" min="1" class="tg-input w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider mb-1 opacity-80">Müşteri Adı / Ünvanı</label>
+                <input id="musteri" type="text" placeholder="Örn: Ahmet Yılmaz" class="tg-input w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+            </div>
+
+            <button onclick="satisGonder()" class="tg-button w-full py-4 rounded-xl font-bold shadow-md hover:opacity-90 active:scale-95 transition mt-4">
+                Satışı Tamamla ve Fatura Kes
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Telegram WebApp motorunu başlat
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Ekranı tam boyuta genişlet
+
+        function satisGonder() {
+            const urun = document.getElementById("urun").value.trim();
+            const miktar = document.getElementById("miktar").value.trim();
+            const musteri = document.getElementById("musteri").value.trim();
+
+            if (!urun || !miktar) {
+                tg.showAlert("Lütfen Ürün Adı ve Adet bilgisini doldurun!");
+                return;
+            }
+
+            // Bot'a iletilecek JSON paketi
+            const veriPaketi = {
+                urun: urun,
+                miktar: miktar,
+                musteri: musteri || "Web POS Müşterisi"
+            };
+
+            // Veriyi Telegram botuna geri fırlat ve pencereyi kapat
+            tg.sendData(JSON.stringify(veriPaketi));
+        }
+    </script>
+</body>
+</html>
